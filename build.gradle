@@ -91,7 +91,12 @@ subprojects {
     // artifacts. Otherwise use the currentVersion as defined in gradle.properties and
     // the releaseTag if it is not 'GA'
     def vtag = environment != 'release' ? '-SNAPSHOT' : (project.hasProperty('releaseTag') && releaseTag != 'GA' ? '-' + releaseTag : '')
+    
     version = currentVersion + vtag
+
+    if (project.hasProperty('buildDate')) {
+        version = "${version}-${buildDate}".toString()
+    }
 }
 
 allprojects {

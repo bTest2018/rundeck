@@ -12,9 +12,9 @@ endif
 
 # version number used by java artifacts
 ifeq ($(TAG),GA)
-  JVERS=$(VERSION)
+  JVERS=$(VERSION)-$(DATE)
 else
-  JVERS=$(VERSION)-$(TAG)
+  JVERS=$(VERSION)-$(TAG)-$(DATE)
 endif
 
 TAG?=snapshot

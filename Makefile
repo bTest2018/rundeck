@@ -1,5 +1,6 @@
 SHELL=/bin/bash
 
+DATE=$(shell date +%Y%m%d)
 VNUMBER=$(shell grep version.number= $${PWD}/version.properties | cut -d= -f 2)
 ifndef TAG
 TAG=$(shell grep version.tag= $${PWD}/version.properties | cut -d= -f 2)
@@ -29,7 +30,14 @@ rundeck:  app
 app: rundeckapp/build/libs/rundeck-$(VERSION).war
 
 rundeckapp/build/libs/rundeck-$(VERSION).war:
-	./gradlew -g $$(pwd)/gradle-cache $(PROXY_DEFS) --build-cache -Penvironment=release -PreleaseTag=$(TAG) -PbuildNum=$(RELEASE) assemble --scan
+	./gradlew -g $$(pwd)/gradle-cache $(PROXY_DEFS) \
+		--build-cache \
+		--scan \
+		-Penvironment=release \
+		-PreleaseTag=$(TAG) \
+		-PbuildNum=$(RELEASE) \
+		-PbuildDate=$(DATE) \
+		assemble 
 
 
 #snapshot and release
@@ -50,10 +58,10 @@ test:
 #rpm and deb packaging
 
 rpm: app
-	cd packaging; $(MAKE) VERSION=$(VNUMBER) VNAME=$(VERSION) RELEASE=$(RELEASE) rpmclean rpm
+	cd packaging; $(MAKE) VERSION=$(VNUMBER) VNAME=$(VERSION)-$(DATE) RELEASE=$(RELEASE) DATE=$(DATE) rpmclean rpm
 
 deb: app
-	cd packaging; $(MAKE) VERSION=$(VNUMBER) VNAME=$(VERSION) RELEASE=$(RELEASE) debclean deb
+	cd packaging; $(MAKE) VERSION=$(VNUMBER) VNAME=$(VERSION) RELEASE=$(RELEASE) DATE=$(DATE) debclean deb
 
 #doc build
 
